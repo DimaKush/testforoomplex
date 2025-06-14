@@ -8,12 +8,8 @@ function getApiBase(): string {
     return process.env['NEXT_PUBLIC_API_BASE_URL'] || 'http://o-complex.com:1337';
   }
   
-  // Client-side: use proxy in development, direct in production
-  if (process.env['NODE_ENV'] === 'development') {
-    return '/api/proxy';
-  }
-  
-  return process.env['NEXT_PUBLIC_API_BASE_URL'] || 'http://o-complex.com:1337';
+  // Client-side: always use Next.js API routes for CORS handling
+  return '/api';
 }
 
 const REQUEST_TIMEOUT = 10000; // 10 seconds
