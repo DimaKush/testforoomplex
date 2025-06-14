@@ -1,36 +1,107 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Тестовое задание React Developer (Next.js)
 
-## Getting Started
+Интернет-магазин с отзывами, каталогом товаров и корзиной покупок по дизайну [Figma](https://www.figma.com/file/XIYVl8ICFkdl3HJZcc8o8B/тестовое?type=design&node-id=0%3A1&mode=design&t=6xUI2e3VtlUzDocD-1).
 
-First, run the development server:
+## 🎯 Что реализовано
+
+### Основные требования ТЗ
+
+- ✅ **Адаптивность** - мобильные, планшеты, десктоп до 1920px
+- ✅ **API интеграция** - отзывы, товары с пагинацией, заказы
+- ✅ **Бесконечная прокрутка** - автоподгрузка товаров
+- ✅ **Корзина** - добавление/удаление товаров, сохранение в localStorage
+- ✅ **Кнопка "Купить"** → поля +/- с вводом количества
+- ✅ **Маска телефона** - собственная реализация для React 19
+- ✅ **Валидация** - проверка телефона, подсветка ошибок
+- ✅ **Модальное окно** - уведомление об успешном заказе
+
+### Дополнительные улучшения
+- 🚀 **SSR** - предзагрузка данных на сервере для быстрого отображения
+- 🛡️ **XSS защита** - санитизация HTML в отзывах
+- ⚡ **Производительность** - skeleton loading, кеширование API, retry логика
+- 🎨 **UX** - анимации, индикаторы загрузки, accessibility
+- 🔒 **Безопасность** - Error Boundary, валидация входных данных
+- 📱 **SEO/PWA** - метаданные, sitemap, manifest, structured data
+- 🏷️ **Schema.org** - полная разметка для поисковых систем (JSON-LD + microdata)
+
+## 🛠 Технологии
+
+- **Next.js 15** + App Router
+- **React 19** + TypeScript
+- **Tailwind CSS v4** 
+- **React Icons**
+
+## 🚀 Запуск
 
 ```bash
+# Установка
+npm install
+
+# Настройка (опционально)
+cp ENVIRONMENT.md .env.local
+
+# Разработка
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+
+# Продакшен
+npm run build && npm start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+**Доступно:** http://localhost:3000
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🏗 Архитектура
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+src/
+├── app/
+│   ├── page.tsx           # Серверный компонент (SSR)
+│   ├── layout.tsx         # Layout с SEO метаданными
+│   ├── sitemap.ts         # Динамический sitemap
+│   └── manifest.ts        # PWA манифест
+├── components/
+│   ├── ClientHomePage.tsx # Клиентский компонент с состоянием
+│   ├── Cart.tsx           # Корзина с формой заказа
+│   ├── PhoneInput.tsx     # Маска телефона (собственная)
+│   └── ...                # Остальные компоненты
+├── hooks/                 # Кастомные хуки
+├── services/api.ts        # API с кешем и retry
+├── utils/                 # Утилиты и валидация
+│   └── schema.ts          # Schema.org генераторы
+├── types/                 # TypeScript типы
+└── constants/             # Константы и fallback данные
+```
 
-## Learn More
+## 🔌 API
 
-To learn more about Next.js, take a look at the following resources:
+- **Отзывы:** `GET /reviews`
+- **Товары:** `GET /products?page=1&page_size=20`
+- **Заказ:** `POST /order` + телефон и корзина
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**CORS решение:** Next.js proxy для разработки + настроенные headers
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🎨 Особенности реализации
 
-## Deploy on Vercel
+**SSR + CSR гибрид:** Серверный page.tsx предзагружает данные, клиентский ClientHomePage управляет интерактивностью
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+**Маска телефона:** Собственная реализация без библиотек (React 19 совместимость)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**API обработка:** Кеширование (5 мин), retry с exponential backoff, timeout защита
+
+**Производительность:** React.memo, useCallback, useMemo, бандл оптимизация
+
+**SEO полный:** Open Graph, Twitter Cards, JSON-LD structured data, robots.txt
+
+**Schema.org разметка:** Полная поддержка для Google Rich Results - Organization, Store, Product, Review, ItemList, FAQ, Breadcrumbs
+
+**Environment конфигурация:** Все настройки через .env переменные - URL сайта, API endpoints, контактные данные
+
+## ⚙️ Конфигурация
+
+Проект использует environment переменные для гибкой настройки:
+
+- **SEO данные** - название сайта, описание, URL из `NEXT_PUBLIC_SITE_*`
+- **API endpoints** - базовые URL из `NEXT_PUBLIC_API_BASE_URL`
+- **Schema.org** - контактные данные, адреса автоматически из env
+- **Метаданные** - OpenGraph, Twitter Cards динамически
+
+См. `ENVIRONMENT.md` для полного списка переменных.
